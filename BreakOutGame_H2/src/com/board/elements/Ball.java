@@ -12,7 +12,7 @@ public class Ball extends Shape implements Observer, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1939877456670815266L;
+	
 	public final int INITIAL_X_DIR = 1, INITIAL_Y_DIR = -1;
 	private boolean onScreen;
 	private int xDir = INITIAL_X_DIR, yDir = INITIAL_Y_DIR;

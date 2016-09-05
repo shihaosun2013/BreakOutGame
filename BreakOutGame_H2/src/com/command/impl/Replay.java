@@ -21,7 +21,7 @@ public class Replay implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1858482578023985979L;
+	
 	private Board board;
 
 	public Replay(Board board) {

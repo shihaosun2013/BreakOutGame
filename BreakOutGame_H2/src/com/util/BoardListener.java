@@ -11,7 +11,7 @@ import com.board.Board;
 /**
  * This class implements all the actionListeners configured on various buttons.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class BoardListener extends KeyAdapter implements ActionListener {

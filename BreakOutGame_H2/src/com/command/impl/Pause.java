@@ -16,7 +16,7 @@ public class Pause implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4718086331882020264L;
+	
 	private Board board;
 
 	public Pause(Board board) {

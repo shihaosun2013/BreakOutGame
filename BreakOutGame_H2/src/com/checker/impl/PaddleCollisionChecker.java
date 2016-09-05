@@ -11,7 +11,7 @@ import com.util.GameMode;
 /**
  * This class checks for ball and paddle collision.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class PaddleCollisionChecker implements EventChecker, Serializable {
@@ -19,7 +19,7 @@ public class PaddleCollisionChecker implements EventChecker, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6746162660856761691L;
+	
 	private int x;
 	private int y;
 	private Board board;

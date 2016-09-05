@@ -9,12 +9,11 @@ import java.io.Serializable;
  * @author shihao
  *
  */
-public class GameEvent implements Serializable {
+public class GameEvent{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6827594647466363131L;
 	private int time;
 	private int action;
 	private Object eventObject;

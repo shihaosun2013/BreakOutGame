@@ -8,7 +8,7 @@ import com.board.elements.Brick;
 /**
  * This class is used to abstract common functionalities of the game.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class CommonStructureUtility {

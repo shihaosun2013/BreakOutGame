@@ -22,7 +22,7 @@ import com.util.GameMode;
 /**
  * This class specifies reset logic for the game.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class Reset implements GameCommand, Serializable {
@@ -30,7 +30,7 @@ public class Reset implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8332667954274481912L;
+	
 	private Board board;
 
 	public Reset(Board board) {

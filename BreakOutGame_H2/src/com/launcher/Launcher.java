@@ -21,7 +21,7 @@ public class Launcher extends JFrame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8667871570909019613L;
+	
 	private static final Logger LOGGER = Logger.getLogger(Board.class.getName());
 	private static Board board;
 	private static Dimension dim;

@@ -16,7 +16,7 @@ public class Clock extends Shape implements Observer, Subject, Serializable, Run
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6839381889557113008L;
+	
 	private static final int MILLISEC_TO_SEC = 1000;
 	private static final Logger LOGGER = Logger.getLogger(Clock.class.getName());
 

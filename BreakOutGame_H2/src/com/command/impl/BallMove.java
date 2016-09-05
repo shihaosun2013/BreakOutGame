@@ -19,7 +19,7 @@ public class BallMove implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4769221678172358854L;
+	
 	private Ball ball;
 
 	public BallMove(Ball ball) {

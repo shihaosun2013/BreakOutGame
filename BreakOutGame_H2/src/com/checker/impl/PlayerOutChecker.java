@@ -22,7 +22,7 @@ public class PlayerOutChecker implements EventChecker, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 177133003984516975L;
+	
 	private Board board;
 	private int y;
 

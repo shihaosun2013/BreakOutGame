@@ -47,7 +47,7 @@ public class Board extends JPanel implements Runnable, Subject, Observer, Serial
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7556266285279456922L;
+	
 	// The game
 	transient private Thread game;
 	private static final Logger LOGGER = Logger.getLogger(Board.class.getName());
@@ -76,7 +76,6 @@ public class Board extends JPanel implements Runnable, Subject, Observer, Serial
 	private EventChecker playerOutChecker;
 
 	JPanel buttonPanel = new JPanel();
-	JPanel toggleButtonPanel = new JPanel();
 	JPanel buttonContainer = new JPanel();
 	private JButton startBtn, stopBtn, undoBtn, replayBtn;
 
@@ -97,7 +96,6 @@ public class Board extends JPanel implements Runnable, Subject, Observer, Serial
 		undoBtn.addActionListener(new BoardListener(this));
 		replayBtn.addActionListener(new BoardListener(this));
 
-		toggleButtonPanel.setSize(90, 60);
 		buttonPanel.add(startBtn);
 		buttonPanel.add(stopBtn);
 		buttonPanel.add(undoBtn);
@@ -108,7 +106,6 @@ public class Board extends JPanel implements Runnable, Subject, Observer, Serial
 		buttonContainer.setBackground(new Color(62, 151, 179));
 
 		// adds the Button Panel to the board
-		buttonContainer.add(toggleButtonPanel);
 		buttonContainer.add(buttonPanel);
 		this.add(buttonContainer);
 

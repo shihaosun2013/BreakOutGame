@@ -7,11 +7,7 @@ import java.io.Serializable;
 import com.util.GameConstants;
 
 
-public class Brick extends Shape implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6222283223454255947L;
+public class Brick extends Shape {
 	private boolean destroyed;
 
 	public Brick() {

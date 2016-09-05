@@ -14,7 +14,7 @@ import com.util.GameParameter;
 /**
  * This class checks for ball and brick collision.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class BrickCollisionChecker implements EventChecker, Serializable {
@@ -22,7 +22,7 @@ public class BrickCollisionChecker implements EventChecker, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 62191599642899261L;
+	
 	private int x;
 	private int y;
 	private Board board;

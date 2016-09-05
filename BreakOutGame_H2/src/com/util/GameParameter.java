@@ -8,12 +8,8 @@ import java.io.Serializable;
  * @author shihao
  *
  */
-public class GameParameter implements Serializable {
+public class GameParameter {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5021274730047704025L;
 
 	// Initial Values for some important variables
 	private int score;

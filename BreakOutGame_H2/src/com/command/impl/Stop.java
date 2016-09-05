@@ -8,7 +8,7 @@ import com.command.GameCommand;
 /**
  * This class specifies stop logic for the game.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class Stop implements GameCommand, Serializable {
@@ -16,7 +16,7 @@ public class Stop implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7022512546646173815L;
+	
 	private Board board;
 
 	public Stop(Board board) {

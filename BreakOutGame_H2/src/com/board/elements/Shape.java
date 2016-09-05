@@ -11,11 +11,7 @@ import java.io.Serializable;
  * @author shihao
  *
  */
-public abstract class Shape implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8826496458842391680L;
+public abstract class Shape {
 	protected int x, y, width, height;
 	protected Color color;
 

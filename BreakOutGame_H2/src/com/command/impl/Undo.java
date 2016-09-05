@@ -22,7 +22,7 @@ public class Undo implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -368961402010147215L;
+	
 	private Board board;
 
 	public Undo(Board board) {

@@ -10,7 +10,7 @@ import com.command.GameCommand;
 /**
  * This class acts as the medium to execute all the commands.
  * 
- * @author hp
+ * @author shihao
  *
  */
 public class CommandBroker implements GameCommand, Serializable {
@@ -18,7 +18,7 @@ public class CommandBroker implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2768317461469909965L;
+	
 	private List<GameCommand> gameCommands;
 
 	public CommandBroker(List<GameCommand> gameCommands) {

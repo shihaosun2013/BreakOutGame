@@ -18,7 +18,7 @@ public class Resume implements GameCommand, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3724650002278526964L;
+	
 	private Board board;
 
 	public Resume(Board board) {

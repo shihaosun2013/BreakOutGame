@@ -7,12 +7,7 @@ import java.io.Serializable;
 
 import com.util.GameConstants;
 
-public class Paddle extends Shape implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4340115699940111885L;
+public class Paddle extends Shape {
 
 	/**
 	 * Constructor

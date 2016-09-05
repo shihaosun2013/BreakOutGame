@@ -16,7 +16,7 @@ public class WallCollisionChecker implements EventChecker, Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2480816459631547900L;
+	
 	private int x;
 	private int y;
 	private Board board;
