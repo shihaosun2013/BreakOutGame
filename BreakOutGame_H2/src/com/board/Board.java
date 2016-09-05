@@ -21,21 +21,28 @@ import com.board.elements.Ball;
 import com.board.elements.Brick;
 import com.board.elements.Clock;
 import com.board.elements.Paddle;
+import com.checker.EventChecker;
+import com.checker.impl.BrickCollisionChecker;
+import com.checker.impl.PaddleCollisionChecker;
+import com.checker.impl.PlayerOutChecker;
+import com.checker.impl.WallCollisionChecker;
 import com.command.GameCommand;
 import com.command.impl.Pause;
 import com.command.impl.Replay;
+import com.command.impl.Reset;
 import com.command.impl.Resume;
+import com.command.impl.Stop;
 import com.command.impl.Undo;
 import com.observer.Observer;
 import com.observer.Subject;
+import com.util.BoardListener;
+import com.util.GameConstants;
 import com.util.GameEvent;
 import com.util.GameMode;
 import com.util.GameParameter;
 
-
-
 //Class definition
-public class Board extends JPanel implements Runnable, Subject, Serializable {
+public class Board extends JPanel implements Runnable, Subject, Observer, Serializable {
 
 	/**
 	 * 
@@ -53,28 +60,25 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 	private ArrayDeque<GameEvent> events;
 	private GameParameter gameParameter;
 
-	private GameCommand resetCommand;
-	private GameCommand pauseCommand;
-	private GameCommand resumeCommand;
-	private GameCommand undoCommand;
-	private GameCommand replayCommand;
-	private GameCommand stopCommand;
 	private GameCommand ballMoveCommand;
-	private GameCommand clockTickCommand;
 	private GameCommand commandBroker;
-	private GameCommand saveCommand;
-	private GameCommand loadCommand;
+	private GameCommand clockTickCommand;
+	private GameCommand pauseCommand;
+	private GameCommand replayCommand;
+	private GameCommand resetCommand;
+	private GameCommand resumeCommand;
+	private GameCommand stopCommand;
+	private GameCommand undoCommand;
 
 	private EventChecker brickCollisionChecker;
 	private EventChecker wallCollisionChecker;
 	private EventChecker paddleCollisionChecker;
-	private EventChecker livesChecker;
 	private EventChecker playerOutChecker;
 
 	JPanel buttonPanel = new JPanel();
 	JPanel toggleButtonPanel = new JPanel();
 	JPanel buttonContainer = new JPanel();
-	private JButton startBtn, stopBtn, undoBtn, replayBtn, saveBtn, loadBtn, layoutBtn;
+	private JButton startBtn, stopBtn, undoBtn, replayBtn;
 
 	// Constructor
 	public Board(int width, int height) {
@@ -87,48 +91,19 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 		stopBtn = styleButton("STOP");
 		undoBtn = styleButton("UNDO");
 		replayBtn = styleButton("REPLAY");
-		saveBtn = styleButton("SAVE");
-		loadBtn = styleButton("LOAD");
-		layoutBtn = styleButton("Grid");
 
 		startBtn.addActionListener(new BoardListener(this));
 		stopBtn.addActionListener(new BoardListener(this));
 		undoBtn.addActionListener(new BoardListener(this));
 		replayBtn.addActionListener(new BoardListener(this));
-		saveBtn.addActionListener(new BoardListener(this));
-		loadBtn.addActionListener(new BoardListener(this));
-
-		// Change the layout on click of the layout button
-		layoutBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent ae) {
-				if (!"Flow".equals(layoutBtn.getText())) {
-					layoutBtn.setText("Flow");
-					buttonPanel.setLayout(new GridLayout(0, 2, 1, 1));
-					buttonPanel.setSize(200, 100);
-					layoutBtn.setFocusable(false);
-
-				} else {
-					layoutBtn.setText("Grid");
-					buttonPanel.setLayout(new FlowLayout());
-					buttonPanel.setSize(500, 500);
-					layoutBtn.setFocusable(false);
-
-				}
-			}
-		});
 
 		toggleButtonPanel.setSize(90, 60);
-		layoutBtn.setPreferredSize(new Dimension(90, 60));
-		toggleButtonPanel.add(layoutBtn);
 		buttonPanel.add(startBtn);
 		buttonPanel.add(stopBtn);
 		buttonPanel.add(undoBtn);
 		buttonPanel.add(replayBtn);
-		buttonPanel.add(saveBtn);
-		buttonPanel.add(loadBtn);
 
-		buttonContainer.setLocation(0, CLOCK_LOCATION_Y + 200);
+		buttonContainer.setLocation(0, GameConstants.CLOCK_LOCATION_Y + 200);
 		buttonContainer.setSize(this.getWidth(), 600);
 		buttonContainer.setBackground(new Color(62, 151, 179));
 
@@ -139,18 +114,15 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 
 		gameParameter = new GameParameter();
 		pauseCommand = new Pause(this);
-		resetCommand = new Reset(this);
 		resumeCommand = new Resume(this);
 		undoCommand = new Undo(this);
 		replayCommand = new Replay(this);
+		resetCommand = new Reset(this);
 		stopCommand = new Stop(this);
-		saveCommand = new Save(this);
-		loadCommand = new Load(this);
 
 		wallCollisionChecker = new WallCollisionChecker(this);
 		paddleCollisionChecker = new PaddleCollisionChecker(this);
 		brickCollisionChecker = new BrickCollisionChecker(this);
-		livesChecker = new LivesChecker(this);
 		playerOutChecker = new PlayerOutChecker(this);
 
 		resetCommand.executeCommand();
@@ -167,7 +139,8 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 
 			executeReplay();
 
-			if (gameParameter.isPaused() || gameParameter.getMode().equals(GameMode.UNDO) && clock.getTime() <= events.peekLast().getTime()) {
+			if (gameParameter.isPaused() || gameParameter.getMode().equals(GameMode.UNDO)
+					&& clock.getTime() <= events.peekLast().getTime()) {
 				if (gameParameter.getMode().equals(GameMode.UNDO)) {
 					checkUndo();
 				}
@@ -187,7 +160,6 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 				checkWallCollision(x1, y1);
 				checkBrickCollision(x1, y1);
 
-				livesChecker.check();
 				playerOutChecker.setY(y1);
 				playerOutChecker.check();
 
@@ -199,7 +171,7 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 				repaint();
 
 				try {
-					Thread.sleep(TIME_STEP);
+					Thread.sleep(GameConstants.TIME_STEP);
 				} catch (InterruptedException ie) {
 					LOGGER.warning(ie.getMessage() + ie);
 				}
@@ -216,7 +188,7 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 			GameEvent event = events.pollFirst();
 			if (event.getAction() == KeyEvent.VK_LEFT || event.getAction() == KeyEvent.VK_RIGHT) {
 				paddle.move(event.getAction(), getWidth());
-			} else if (event.getAction() == GAME_END) {
+			} else if (event.getAction() == GameConstants.GAME_END) {
 				stopCommand.executeCommand();
 			}
 		}
@@ -229,7 +201,7 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 		GameEvent event = events.pollLast();
 		if (event.getAction() == KeyEvent.VK_RIGHT || event.getAction() == KeyEvent.VK_LEFT) {
 			paddle.setX(paddle.getX() - (Integer) event.getEventObject());
-		} else if (event.getAction() == BRICK_COLLISION) {
+		} else if (event.getAction() == GameConstants.BRICK_COLLISION) {
 			((Brick) event.getEventObject()).setDestroyed(false);
 			brickCollisionChecker.setX(ball.getX());
 			brickCollisionChecker.setY(ball.getY());
@@ -292,15 +264,10 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 		}
 		g.setColor(Color.BLUE);
 		g.setFont(new Font("Tahoma", Font.BOLD, 14));
-		g.drawString("Lives: " + gameParameter.getLives(), CLOCK_LOCATION_X + this.getWidth() - 80,
-				CLOCK_LOCATION_Y + 160);
-		g.drawString("Score: " + gameParameter.getScore(), CLOCK_LOCATION_X, CLOCK_LOCATION_Y + 160);
-		g.drawString("Level: " + gameParameter.getLevel(), CLOCK_LOCATION_X + this.getWidth() - 80,
-				CLOCK_LOCATION_Y + 180);
 
-		if (gameParameter.getLives() == MIN_LIVES) {
-			g.drawString("Nice try dude, wanna play again?", getWidth() / 3, getHeight() - 20);
-		}
+		g.drawString("Score: " + gameParameter.getScore(), GameConstants.CLOCK_LOCATION_X,
+				GameConstants.CLOCK_LOCATION_Y + 160);
+
 	}
 
 	public void register(Observer observer) {
@@ -374,7 +341,7 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 	}
 
 	public int getTIME_STEP() {
-		return TIME_STEP;
+		return GameConstants.TIME_STEP;
 	}
 
 	public GameParameter getGameParameter() {
@@ -385,20 +352,20 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 		this.gameParameter = gameParameter;
 	}
 
-	public GameCommand getResetCommand() {
-		return resetCommand;
-	}
-
-	public void setResetCommand(GameCommand resetCommand) {
-		this.resetCommand = resetCommand;
-	}
-
 	public GameCommand getPauseCommand() {
 		return pauseCommand;
 	}
 
 	public void setPauseCommand(GameCommand pauseCommand) {
 		this.pauseCommand = pauseCommand;
+	}
+
+	public GameCommand getResetCommand() {
+		return resetCommand;
+	}
+
+	public void setResetCommand(GameCommand resetCommand) {
+		this.resetCommand = resetCommand;
 	}
 
 	public GameCommand getResumeCommand() {
@@ -465,14 +432,6 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 		this.replayBtn = replayBtn;
 	}
 
-	public JButton getLayoutBtn() {
-		return layoutBtn;
-	}
-
-	public void setLayoutBtn(JButton layoutBtn) {
-		this.layoutBtn = layoutBtn;
-	}
-
 	public GameCommand getBallMoveCommand() {
 		return ballMoveCommand;
 	}
@@ -495,66 +454,6 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 
 	public void setCommandBroker(GameCommand commandBroker) {
 		this.commandBroker = commandBroker;
-	}
-
-	/**
-	 * @return the saveBtn
-	 */
-	public JButton getSaveBtn() {
-		return saveBtn;
-	}
-
-	/**
-	 * @param saveBtn
-	 *            the saveBtn to set
-	 */
-	public void setSaveBtn(JButton saveBtn) {
-		this.saveBtn = saveBtn;
-	}
-
-	/**
-	 * @return the loadBtn
-	 */
-	public JButton getLoadBtn() {
-		return loadBtn;
-	}
-
-	/**
-	 * @param loadBtn
-	 *            the loadBtn to set
-	 */
-	public void setLoadBtn(JButton loadBtn) {
-		this.loadBtn = loadBtn;
-	}
-
-	/**
-	 * @return the saveCommand
-	 */
-	public GameCommand getSaveCommand() {
-		return saveCommand;
-	}
-
-	/**
-	 * @param saveCommand
-	 *            the saveCommand to set
-	 */
-	public void setSaveCommand(GameCommand saveCommand) {
-		this.saveCommand = saveCommand;
-	}
-
-	/**
-	 * @return the loadCommand
-	 */
-	public GameCommand getLoadCommand() {
-		return loadCommand;
-	}
-
-	/**
-	 * @param loadCommand
-	 *            the loadCommand to set
-	 */
-	public void setLoadCommand(GameCommand loadCommand) {
-		this.loadCommand = loadCommand;
 	}
 
 	/***
@@ -584,5 +483,11 @@ public class Board extends JPanel implements Runnable, Subject, Serializable {
 			button.setFont(new Font("Verdana", Font.BOLD, 20));
 		}
 		return button;
+	}
+
+	@Override
+	public void update(int timeStep) {
+		// TODO Auto-generated method stub
+
 	}
 }

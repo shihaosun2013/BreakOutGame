@@ -42,10 +42,8 @@ public class Undo implements GameCommand, Serializable {
 		if (event.getAction() == GameConstants.GAME_WIN || event.getAction() == GameConstants.GAME_LOST) {
 			if (event.getAction() == GameConstants.GAME_WIN) {
 				gameParameter.setScore(gameParameter.getScore() - 100);
-				gameParameter.setLives(gameParameter.getLives() - 1);
 			} else {
 				gameParameter.setScore(gameParameter.getScore() + 50);
-				gameParameter.setLives(gameParameter.getLives() + 1);
 			}
 
 			board.getBall().set((Ball) event.getEventObject());

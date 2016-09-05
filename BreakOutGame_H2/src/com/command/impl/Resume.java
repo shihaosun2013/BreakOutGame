@@ -2,8 +2,10 @@ package com.command.impl;
 
 import java.io.Serializable;
 
-import com.brickout.intf.GameCommand;
-import com.brickout.ui.Board;
+import com.board.Board;
+import com.command.GameCommand;
+
+
 
 /**
  * This class specifies resume logic for the game.
